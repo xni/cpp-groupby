@@ -108,8 +108,43 @@ void test3() {
     }
 }
 
+char GetFirstLetter(const User& u) {
+    return u.city[0];
+}
+
+void test4() {
+    std::vector<User> users { {"Moscow", 1}, {"Sochi", 2} };
+    auto groped = GroupBy(GetFirstLetter, users);
+    bool hasMoscow = false;
+    bool hasSochi = false;
+    for (const auto& it : groped) {
+        if (it.first == 'M') {
+            hasMoscow = true;
+            if (it.second.size() != 1) {
+                throw std::logic_error("Amount of Moscow users is not 1");
+            }
+            if (it.second[0].userId != 1) {
+                throw std::logic_error("UserID for Moscow users is not 1");
+            }
+        }
+        if (it.first == 'S') {
+            hasSochi = true;
+            if (it.second.size() != 1) {
+                throw std::logic_error("Amount of Sochi users is not 1");
+            }
+            if (it.second[0].userId != 2) {
+                throw std::logic_error("UserID for Sochi users is not 2");
+            }
+        }
+    }
+    if (!hasMoscow || !hasSochi) {
+        throw std::logic_error("Expected to find both cities in the groupBy result");
+    }
+}
+
 int main() {
     test1();
     test2();
     test3();
+    test4();
 }

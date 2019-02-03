@@ -29,6 +29,17 @@ GroupBy(KeyType (Iterable::value_type::*keyExtractor)() const, const Iterable& i
 }
 
 
+template <typename Iterable, typename KeyType>
+AnonymousGroupByResult<KeyType, typename Iterable::value_type>
+GroupBy(KeyType (*keyExtractor)(const typename Iterable::value_type&), const Iterable& iterable) {
+    AnonymousGroupByResult<KeyType, typename Iterable::value_type> result;
+    for (const auto& value : iterable) {
+        result[keyExtractor(value)].push_back(value);
+    }
+    return result;
+}
+
+
 #define DECLARE_NAMED_GROUP_BY_RESULT(ResultClassName, GroupName, Items)            \
 template <typename KeyType, typename ValueType>                                     \
 class ResultClassName : public AnonymousGroupByResult<KeyType, ValueType> {         \
